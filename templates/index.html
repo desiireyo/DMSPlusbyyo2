@@ -1,0 +1,503 @@
+﻿<!-- !DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" -->
+<html>
+
+<head>
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <title>บริษัท โตโยต้าชุมพร ผู้จำหน่ายโตโยต้า จำกัด</title>
+    <meta name="keywords" content="บริษัท โตโยต้าชุมพร ผู้จำหน่ายโตโยต้า จำกัด" />
+    <meta name="description" content="บริษัท โตโยต้าชุมพร ผู้จำหน่ายโตโยต้า จำกัด">
+    <meta name="author" content="SCIM">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' type='text/css' href='css/fonts-googleapis.css'>
+    <link rel='stylesheet' type='text/css' href='css/assets/fonts/glyphicons-pro/glyphicons-pro.css'>
+    <!-- Theme CSS -->
+    <link rel="stylesheet" type="text/css" href="css/assets/skin/default_skin/css/theme.css">
+    <!-- Stateface CSS(font) -->
+    <link rel="stylesheet" type="text/css" href="css/assets/fonts/stateface/stateface.css">
+    <!-- Admin Forms CSS -->
+    <link rel="stylesheet" type="text/css" href="css/assets/admin-tools/admin-forms/css/admin-forms.css">
+    <!-- jqwidgets -->
+    <link rel="stylesheet" type="text/css" href="js/jqwidgets/styles/jqx.base.css">
+    <link rel="stylesheet" type="text/css" href="js/jqwidgets/styles/jqx.bootstrap.css">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="css/assets/img/favicon.ico">
+    <script type="text/javascript" src="js/base64.js"></script>
+    <script type="text/javascript" src="js/json2.js"></script>
+    <!-- jQuery -->
+    <script type="text/javascript" src="js/vendor/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/vendor/jquery/jquery.session.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type="text/javascript">
+        if (($.session.get('username') === undefined) || ($.session.get('username') === '')) {
+            window.location.href = '/';
+        }
+    </script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /*alert styles*/
+        
+        #alert-info-1,
+        #alert-warning-1,
+        #alert-danger-1,
+        #alert-success-1 {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="widgets-data-page" data-spy="scroll" data-target="#nav-spy" data-offset="300">
+    <!-- Start: Search -->
+    <div id="search">
+        <div id="searchHeader" class="panel-heading">
+            <i class="fa fa-list-ol fa-lg" aria-hidden="true"></i> ค้นหาข้อมูล...
+        </div>
+        <div id="searchContent" style="overflow: hidden">
+            <div style="margin: 10px">
+                ข้อความค้นหา
+                <input type="text" id="searchInput" onkeyup="keyPressed(event)" />
+                <input type="button" value="ค้นหา" id="searchButton" />
+                <input type="button" value="ตกลง" id="okButton" />
+                <input type="button" value="ยกเลิก" id="cancelButton" />
+                <div id="panel1" style="margin-top: 10px;">
+                    <div id="result">
+                        <div id="tbSearch"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="returnvalue" value="">
+    </div>
+    <!-- End: Search -->
+    <!-- Start: Main -->
+    <div id="main">
+        <!-- Start: Header -->
+        <header class="navbar navbar-fixed-top">
+            <div class="navbar-branding">
+                <a class="navbar-brand" href="dashboard.html">
+                    <img class="" src="images/LOGO_DMSPlus.jpg" width="150" alt="some"> </a>
+                <span id="toggle_sidemenu_l" class="ad ad-lines"></span>
+            </div>
+            <div class="navbar-left">
+                <p style="font-size: 18px; color: #30363e; margin-left: 0px; margin-top: 5px; margin-bottom: 2px;">ระบบบริหารงานขายรถยนต์</p>
+                <p style="font-size: 14px; color: #30363e; margin-left: 0px; margin-bottom: 0px;">บริษัท โตโยต้าชุมพร ผู้จำหน่ายโตโยต้า จำกัด</p>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a class="request-fullscreen toggle-active" href="#">
+                        <span class="ad ad-screen-full fs18"></span>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle fw600 p15" data-toggle="dropdown">
+                    นายทดสอบ ระบบ
+                    <span class="caret caret-tp hidden-xs"></span>
+                </a>
+                    <ul class="dropdown-menu list-group dropdown-persist w250" role="menu">
+                        <li class="list-group-item">
+                            <a href="#" class="animated animated-short fadeInUp">
+                                <span class="fa fa-envelope"></span> รหัสพนักงาน </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="animated animated-short fadeInUp">
+                                <span class="fa fa-user"></span> สาขา </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="animated animated-short fadeInUp">
+                                <span class="fa fa-gear"></span> ระดับ </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="#" class="animated animated-short fadeInUp">
+                                <span class="fa fa-bell"></span> เปลี่ยนรหัสผ่าน </a>
+                        </li>
+                        <li class="dropdown-footer" id="logout">
+                            <a href="#" class="">
+                                <span class="fa fa-power-off pr5"></span> Logout </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </header>
+        <!-- End: Header -->
+        <!-- Start: Sidebar -->
+        <aside id="sidebar_left" class="nano nano-primary affix has-scrollbar sidebar-default">
+            <!-- Start: Sidebar Left Content -->
+            <div class="sidebar-left-content nano-content" tabindex="0" style="margin-right: -17px;">
+                <!-- Start: Sidebar Header -->
+                <header class="sidebar-header">
+                    <!-- Sidebar Widget - Author  -->
+                    <div class="sidebar-widget author-widget">
+                        <div class="media">
+                            <a class="media-left" href="#">
+                                <img class="img-responsive" src="images/avatars/1.jpg" alt="avatars"> </a>
+                            <div class="media-body">
+                                <div class="media-links">
+                                    <div class="sidebar-menu-toggle">Admin</div>
+                                </div>
+                                <div class="media-author">นายทดสอบ ระบบ</div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <!-- End: Sidebar Header -->
+                <!-- Start: Sidebar Left Menu -->
+                <div id="leftMenu">
+                </div>
+                <!-- End: Sidebar Menu -->
+            </div>
+            <!-- End: Sidebar Left Content -->
+        </aside>
+        <!-- End: Sidebar Left -->
+        <!-- Start: Content-Wrapper -->
+        <section id="content_wrapper">
+            <!-- Start: Topbar-Dropdown -->
+            <div id="topbar-dropmenu">
+                <div class="topbar-menu row">
+                    <div class="col-xs-4 col-sm-2">
+                        <a href="#" class="metro-tile">
+                            <span class="glyphicon glyphicon-inbox"></span>
+                            <span class="metro-title">Messages</span>
+                        </a>
+                    </div>
+                    <div class="col-xs-4 col-sm-2">
+                        <a href="#" class="metro-tile">
+                            <span class="glyphicon glyphicon-user"></span>
+                            <span class="metro-title">Users</span>
+                        </a>
+                    </div>
+                    <div class="col-xs-4 col-sm-2">
+                        <a href="#" class="metro-tile">
+                            <span class="glyphicon glyphicon-headphones"></span>
+                            <span class="metro-title">Support</span>
+                        </a>
+                    </div>
+                    <div class="col-xs-4 col-sm-2">
+                        <a href="#" class="metro-tile">
+                            <span class="fa fa-gears"></span>
+                            <span class="metro-title">Settings</span>
+                        </a>
+                    </div>
+                    <div class="col-xs-4 col-sm-2">
+                        <a href="#" class="metro-tile">
+                            <span class="glyphicon glyphicon-facetime-video"></span>
+                            <span class="metro-title">Videos</span>
+                        </a>
+                    </div>
+                    <div class="col-xs-4 col-sm-2">
+                        <a href="#" class="metro-tile">
+                            <span class="glyphicon glyphicon-picture"></span>
+                            <span class="metro-title">Pictures</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- End: Topbar-Dropdown -->
+            <!-- Start: Topbar -->
+            <!-- <header id="topbar">
+                <div class="topbar-left text-primary" style="font-size : 16px; padding-top : 3px;">
+                    หน้าหลัก </div>
+            </header> -->
+            <!-- End: Topbar -->
+            <!-- Begin: Content -->
+            <section id="content">
+                <div class="special-alerts">
+                    <div class="alert alert-primary alert-border-left" role="alert" id="alert-info-1">
+                        <strong><i class="fa fa-info-circle pr10"></i><span id="alert-info-1-text"></span></strong>
+                    </div>
+                    <div class="alert alert-warning alert-border-left" role="alert" id="alert-warning-1">
+                        <strong><i class="fa fa-warning pr10"></i><span id="alert-warning-1-text"></span></strong>
+                    </div>
+                    <div class="alert alert-danger alert-border-left" role="alert" id="alert-danger-1">
+                        <strong><i class="fa fa-times-circle pr10"></i><span id="alert-danger-1-text"></span></strong>
+                    </div>
+                    <div class="alert alert-success alert-border-left" role="alert" id="alert-success-1">
+                        <strong><i class="fa fa-check-square-o pr10"></i><span id="alert-success-1-text"></span></strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- begin: .tray-center -->
+                        <div class="tray tray-center" id="panelContent" style="height:200px">
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- End: Content -->
+            <!-- Start: Bottombar -->
+            <footer id="content-footer" class="affix">
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="footer-legal">Copyright © 2016 <b>SCIM</b> BECAUSE WE CAN</span>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <a href="#content" class="footer-return-top">
+                            <span class="fa fa-arrow-up"></span>
+                        </a>
+                    </div>
+                </div>
+            </footer>
+            <!-- End: Bottombar -->
+        </section>
+        <!-- End: Content-Wrapper -->
+    </div>
+    <!-- End: Main -->
+    <!-- Loading -->
+    <div id="jqxLoader"></div>
+    <!-- BEGIN: PAGE SCRIPTS -->
+    <!-- jQuery -->
+    <script type="text/javascript" src="js/vendor/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/vendor/jquery/jquery.session.js"></script>
+    <!-- HighCharts Plugin -->
+    <script type="text/javascript" src="js/vendor/plugins/highcharts/highcharts.js"></script>
+    <!-- Sparklines Plugin -->
+    <script type="text/javascript" src="js/vendor/plugins/sparkline/jquery.sparkline.min.js"></script>
+    <!-- Simple Circles Plugin -->
+    <script type="text/javascript" src="js/vendor/plugins/circles/circles.js"></script>
+    <!-- JvectorMap Plugin + US Map (more maps in plugin/assets folder) -->
+    <script type="text/javascript" src="js/vendor/plugins/jvectormap/jquery.jvectormap.min.js"></script>
+    <script type="text/javascript" src="js/vendor/plugins/jvectormap/assets/jquery-jvectormap-us-lcc-en.js"></script>
+    <!-- Theme Javascript -->
+    <script type="text/javascript" src="css/assets/js/utility/utility.js"></script>
+    <script type="text/javascript" src="css/assets/js/demo/demo.js"></script>
+    <script type="text/javascript" src="css/assets/js/main.js"></script>
+    <!-- jqwidgets -->
+    <script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/jqx-all.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/globalization/globalize.js"></script>
+    <script type="text/javascript" src="js/jqwidgets/globalization/globalize.culture.en-US.js"></script>
+    <!-- Widget Javascript -->
+    <script type="text/javascript" src="css/assets/js/demo/widgets.js"></script>
+    <script type="text/javascript" src="js/mainmenu.js"></script>
+    <script type="text/javascript" src="js/search.js"></script>
+    <script type="text/javascript">
+        var xlocat = '';
+        //Load Menu
+        loadMenu();
+
+        function keyPressed(e) {
+            if (e.keyCode == 13) {
+                //alert('keyPressed');
+                $("#searchButton").click();
+            }
+        }
+
+        // Show Alert
+        function ShowMessage(text, type) {
+            $('#alert-' + type + '-1-text').html(text);
+            $('#alert-' + type + '-1').slideToggle('slow');
+            setTimeout(
+                function() {
+                    $('#alert-' + type + '-1').slideToggle('slow');
+                },
+                2500
+            );
+        }
+
+        $(document).ready(function() {
+            "use strict";
+
+            // Init Theme Core
+            Core.init();
+
+            // Init Demo JS
+            Demo.init();
+
+            // Init jqxTheme
+            $.jqx.theme = "bootstrap";
+            var width = $(window).width();
+            var height = $(window).height();
+            $("#jqxLoader").jqxLoader({
+                width: 110,
+                height: 60,
+                imagePosition: 'top',
+                text: "กำลังโหลด..."
+            });
+
+            //Log Out
+            $("#logout").click(function() {
+                $.session.clear();
+                window.location.href = '/';
+            });
+
+            //ค้นหา
+            $('#search').jqxWindow({
+                width: width + 13,
+                height: height - 5,
+                maxWidth: width + 13,
+                maxHeight: height,
+                resizable: false,
+                isModal: true,
+                autoOpen: false,
+                showCollapseButton: true,
+                cancelButton: $('#cancelButton'),
+                initContent: function() {
+                    $('#search').jqxWindow('focus');
+                    $("#searchInput").jqxInput({
+                        height: 23,
+                        width: width - 360
+                    });
+                    $('#searchButton').jqxButton({
+                        width: '80px'
+                    });
+                    $('#okButton').jqxButton({
+                        width: '80px',
+                        template: "success"
+                    });
+                    $('#cancelButton').jqxButton({
+                        width: '80px',
+                        template: "danger"
+                    });
+                }
+            });
+
+            $('#search').on('open', function(event) {
+                $('#searchInput').jqxInput('focus');
+            });
+
+            $('#search').on('close', function(event) {
+                $("#searchInput").val('');
+            });
+
+            //กำหนดรายละเอียดสินค้า
+            $("#SET101").click(function() {
+                loadHTML("set_settype");
+            });
+            $("#SET102").click(function() {
+                loadHTML("set_setmodel");
+            });
+            $("#SET103").click(function() {
+                loadHTML("set_setbaab");
+            });
+            $("#SET104").click(function() {
+                loadHTML("set_setcolor");
+            });
+            $("#SET105").click(function() {
+                loadHTML("set_setgroup");
+            });
+            $("#SET106").click(function() {
+                loadHTML("set_regflag");
+            });
+            $("#SET107").click(function() {
+                loadHTML("set_optmast");
+            });
+            $("#SET108").click(function() {
+                loadHTML("set_optmastlocat");
+            });
+            $("#SET109").click(function() {
+                loadHTML("set_setmod");
+            });
+            $("#SET110").click(function() {
+                loadHTML("set_modmast");
+            });
+            $("#SET111").click(function() {
+                loadHTML("set_setfleet");
+            });
+            $("#SET112").click(function() {
+                loadHTML("set_bookingstatus");
+            });
+
+            //กำหนดแคมเปญ
+            $("#SET002").click(function() {
+                loadHTML("");
+            });
+            //กำหนดแคมเปญกิจกรรมสนับสนุน
+            $("#SET003").click(function() {
+                loadHTML("");
+            });
+
+            //กำหนดข้อมูลลูกหนี้
+            $("#SET401").click(function() {
+                loadHTML("set_typcont");
+            });
+            $("#SET402").click(function() {
+                loadHTML("set_typhold");
+            });
+            $("#SET403").click(function() {
+                loadHTML("set_typlost");
+            });
+            $("#SET404").click(function() {
+                loadHTML("set_argroup");
+            });
+            $("#SET405").click(function() {
+                loadHTML("set_setgrade");
+            });
+            $("#SET406").click(function() {
+                loadHTML("");
+            });
+            $("#SET407").click(function() {
+                loadHTML("");
+            });
+            $("#SET408").click(function() {
+                loadHTML("");
+            });
+            $("#SET409").click(function() {
+                loadHTML("set_setaump");
+            });
+            $("#SET410").click(function() {
+                loadHTML("set_setprov");
+            });
+            $("#SET411").click(function() {
+                loadHTML("");
+            });
+
+            //กำหนดข้อมูลระบบการเงิน
+            $("#SET501").click(function() {
+                loadHTML("set_paytyp");
+            });
+            $("#SET502").click(function() {
+                loadHTML("set_payfor");
+            });
+            $("#SET503").click(function() {
+                loadHTML("set_setbank");
+            });
+            $("#SET504").click(function() {
+                loadHTML("set_bankbook");
+            });
+            $("#SET505").click(function() {
+                loadHTML("set_rtchq");
+            });
+            $("#SET506").click(function() {
+                loadHTML("set_paydue");
+            });
+            $("#SET507").click(function() {
+                loadHTML("set_setacti");
+            });
+            $("#SET508").click(function() {
+                loadHTML("set_setreson");
+            });
+
+            //ระบบสต๊อกสินค้า
+            $("#STK006").click(function() {
+                loadHTML("stk_onhand");
+            });
+            $("#STK010").click(function() {
+                loadHTML("stk_onhanddate");
+            });
+            $("#STK011").click(function() {
+                loadHTML("stk_stockcard");
+            });
+
+            //ระบบการขายสินค้า
+            $("#SAL001").click(function() {
+                loadHTML("sale_customer");
+            });
+            $("#SAL002").click(function() {
+                loadHTML("sale_prospect");
+            });
+
+            //รายงาน
+            $("#RP01").click(function() {
+                loadHTML("rp_receiptdaily");
+            });
+        });
+    </script>
+    <!-- END: PAGE SCRIPTS -->
+</body>
+
+</html>

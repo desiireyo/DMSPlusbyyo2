@@ -1,0 +1,160 @@
+﻿<div class="row" id="spy2">
+    <!-- Chart with filter Widget -->
+    <div class="col-md-12 admin-grid">
+        <div class="panel" id="p2">
+            <div class="panel-heading">
+                <span class="panel-title">รายงานรับชำระเงินประจำวัน</span>
+                <span class="panel-controls">
+                    <a href="#" class="panel-control-loader"></a>
+                    <a href="#" class="panel-control-remove"></a>
+                    <a href="#" class="panel-control-collapse"></a>
+                    <a href="#" class="panel-control-fullscreen"></a>
+                </span>
+            </div>
+            <div class="panel-body">
+                <div class="p15 pt5 mt15">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="locatcd">สาขา</label>
+                                <div id="locatcd" class="input-button">
+                                    <input type="text" id="v-locatcd" />
+                                    <div id="searchInvlocat"><img alt="search" width="20" height="20" src="/images/search_lg.png" /></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="locatnm">ชื่อสาขา</label>
+                                <input type="text" id="locatnm" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vfdate">จากวันที่</label>
+                                <div id="vfdate"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vtdate">ถึงวันที่</label>
+                                <div id="vtdate"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vpayfor">รับชำระค่า</label>
+                                <div id="vpayfor" class="input-button">
+                                    <input type="text" id="v-vpayfor" />
+                                    <div id="searchPayfor"><img alt="search" width="20" height="20" src="/images/search_lg.png" /></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="vpaytyp">รับชำระโดย</label>
+                                <div id="vpaytyp" class="input-button">
+                                    <input type="text" id="v-vpaytyp" />
+                                    <div id="searchPaytyp"><img alt="search" width="20" height="20" src="/images/search_lg.png" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        <button type="button" class="btn btn-lg btn-default" id="openreport">
+                            <span class="glyphicon glyphicon-print" aria-hidden="true"></span> Preview
+                        </button>
+                        <button type="button" class="btn btn-lg btn-default" id="export">
+                            <span class="glyphicon glyphicon-export" aria-hidden="true"></span> Export Excel
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: .col-md-12.admin-grid -->
+</div>
+<!-- end: .row -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        function openReport (verb, url, data, target) {
+            var form = document.createElement("form");
+            form.action = url;
+            form.method = verb;
+            form.target = target || "_blank";
+            if (data) {
+                for (var key in data) {
+                    var input = document.createElement("textarea");
+                    input.name = key;
+                    input.value = typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key];
+                    form.appendChild(input);
+                }
+            }
+            form.style.display = 'none';
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        };
+
+        $('#locatcd').jqxInput({ height: 28, width: '100%' });
+        $('#locatnm').jqxInput({ height: 28, width: '100%' });
+        $('#vfdate').jqxDateTimeInput({ height: 28, width: '100%', culture:'en-US' });
+        $('#vtdate').jqxDateTimeInput({ height: 28, width: '100%', culture:'en-US' });
+        $('#vpayfor').jqxInput({ height: 28, width: '100%' });
+        $('#vpaytyp').jqxInput({ height: 28, width: '100%' });
+        // Search
+        $("#searchInvlocat").off().on('click', function() {
+            searchAll('invlocat', 'locatcd');
+        });
+        $("#searchPayfor").off().on('click', function() {
+            searchAll('payfor', 'vpayfor');
+        });
+        $("#searchPaytyp").off().on('click', function() {
+            searchAll('paytyp', 'vpaytyp');
+        });
+
+        //show description
+        $("#locatcd").on('change', function() {
+            $.ajax({
+                async: false,
+                method: 'GET',
+                dataType: 'json',
+                url: "sqltext",
+                data: { sql: "SELECT * FROM INVLOCAT WHERE LOCATCD = '"+$('#locatcd').jqxInput('val')+"'" },
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#locatnm').val(data[i].LOCATNM);
+                    };
+                }
+            });
+        });
+        // preview report
+        $("#openreport").click(function() {
+            var baseUrl = document.location.origin;
+            var reportname = 'receiptdaily';
+            var vlocat = $('#locatcd').val();
+            var vfdate = $('#vfdate').val();
+            var vtdate = $('#vtdate').val();
+            var vpayfor = $('#vpayfor').val();
+            var vpaytyp = $('#vpaytyp').val();
+            console.log(baseUrl);
+            openReport('GET', baseUrl+'/report', {reportname: reportname, locat: vlocat, fdate: vfdate, tdate: vtdate, payfor: vpayfor, paytyp: vpaytyp});
+        });
+
+        $("#export").click(function() {
+            var baseUrl = document.location.origin;
+            var reportname = 'receiptdaily';
+            var vlocat = $('#locatcd').val();
+            var vfdate = $('#vfdate').val();
+            var vtdate = $('#vtdate').val();
+            var vpayfor = $('#vpayfor').val();
+            var vpaytyp = $('#vpaytyp').val();
+            console.log(baseUrl);
+            openReport('GET', baseUrl+'/export', {reportname: reportname, locat: vlocat, fdate: vfdate, tdate: vtdate, payfor: vpayfor, paytyp: vpaytyp});
+        });
+    });
+</script>

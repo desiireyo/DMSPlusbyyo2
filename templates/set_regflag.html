@@ -1,0 +1,258 @@
+﻿<div class="row" id="spy2">
+    <!-- Chart with filter Widget -->
+    <div class="col-md-12 admin-grid">
+        <div class="panel" id="p2">
+            <div class="panel-heading">
+                <span class="panel-icon"><span class="glyphicons glyphicons-imac"></span></span>
+                <span class="panel-title">กำหนดสถานะทางทะเบียน</span>
+                <span class="panel-controls">
+                    <a href="#" class="panel-control-loader"></a>
+                    <a href="#" class="panel-control-remove"></a>
+                    <a href="#" class="panel-control-collapse"></a>
+                    <a href="#" class="panel-control-fullscreen"></a>
+                </span>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" id="fmRegflag">
+                    <div class="p15 pt5 mt15">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Start -->
+                                <div class="admin-form">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="regcode">รหัสสถานะทางทะเบียน</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <input type="text" id="regcode" class="input" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="regdesc">รายละเอียดสถานะทางทะเบียน</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <input type="text" id="regdesc" class="input" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"></label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <button type="button" id="newBtn"><span class="fa fa-refresh"></span> เริ่มใหม่</button>
+                                                <button type="button" id="saveBtn"><span class="fa fa-floppy-o"></span> บันทึก</button>
+                                                <button type="button" id="searchBtn"><span class="fa fa-search"></span> ค้นหา</button>
+                                                <button type="button" id="deleteBtn"><span class="fa fa-trash-o"></span> ลบ</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end: .col-md-12.admin-grid -->
+</div>
+<!-- end: .row -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        var status = 'insert';
+        $('.admin-panels').adminpanel({
+            grid: '.admin-grid',
+            callback: function() {
+                bootbox.confirm('<h3>A Custom Callback!</h3>', function() {});
+            },
+            onFinish: function() {
+                $('.admin-panels').addClass('animated fadeIn').removeClass('fade-onload');
+                demoHighCharts.init();
+            },
+            onSave: function() {
+                $(window).trigger('resize');
+            }
+        });
+
+        $("#regcode").jqxInput({
+            placeHolder: "Enter a reg code",
+            height: 25,
+            width: 300,
+            maxLength: 1
+        });
+        $("#regdesc").jqxInput({
+            placeHolder: "Enter a reg description",
+            height: 25,
+            width: 300,
+            maxLength: 50
+        });
+        $("#newBtn").jqxButton({
+            template: "info",
+            width: 90
+        });
+        $("#saveBtn").jqxButton({
+            template: "primary",
+            width: 90
+        });
+        $("#searchBtn").jqxButton({
+            template: "success",
+            width: 90
+        });
+        $("#deleteBtn").jqxButton({
+            disabled: true,
+            template: "danger",
+            width: 90
+        });
+
+        function statusChange(disabled) {
+            if (disabled === false) {
+                status = 'insert';
+                $('#regcode').val('');
+                $('#regdesc').val('');
+            } else {
+                status = 'update';
+            }
+            $('#regcode').jqxInput({
+                disabled: disabled
+            });
+            $("#deleteBtn").jqxButton({
+                disabled: !disabled
+            });
+        }
+        var rules = [{
+            input: '#regcode',
+            message: 'กรุณาระบุรหัสสถานะทางทะเบียน!',
+            action: 'keyup, blur',
+            rule: 'required'
+        }, {
+            input: '#regcode',
+            message: 'ระบุรหัสสถานะทางทะเบียนซ้ำ!',
+            action: 'keyup, blur',
+            rule: function(input, commit) {
+                var regcode = $('#regcode').val();
+                if (regcode !== '') {
+                    $.ajax({
+                        url: "duplicateCheck",
+                        type: 'get',
+                        data: {
+                            table: 'REGFLAG',
+                            field: 'REGCODE',
+                            value: regcode
+                        },
+                        success: function(data) {
+                            if (data === true) {
+                                commit(true);
+                            } else commit(false);
+                        },
+                        error: function() {
+                            commit(false);
+                        }
+                    });
+                }
+            }
+        }];
+
+        $('#fmRegflag').jqxValidator({
+            hintType: 'label',
+            animationDuration: 0,
+            closeOnClick: false,
+            rules: rules
+        });
+        //เริ่มใหม่
+        $('#newBtn').off().on('click', function() {
+            loadHTML("set_regflag");
+        });
+        //บันทึก
+        $('#saveBtn').off().on('click', function() {
+            $('#fmRegflag').jqxValidator('validate', function(result) {
+                if (result) {
+                    $.when($.confirmdlg('ต้องการบันทึกข้อมูล?', 'info')).then(function() {
+                        var valueJSON = [{
+                            status: status,
+                            table: 'REGFLAG',
+                            field: 'REGCODE',
+                            key: $('#regcode').val(),
+                            value: [{
+                                REGCODE: $('#regcode').val(),
+                                REGDESC: $('#regdesc').val()
+                            }]
+                        }];
+                        //valueJSON.push();
+                        // Convert Value To JSON String
+                        var value = JSON.stringify(valueJSON);
+                        $('#ok').click(function(event) {
+                            $.ajax({
+                                url: 'saveOne',
+                                type: 'POST',
+                                contentType: "application/json",
+                                dataType: "json",
+                                data: value,
+                                success: function(data) {
+                                    if (data === true) {
+                                        ShowMessage("บันทึกข้อมูลเรียบร้อย!", "success");
+                                        statusChange(false);
+                                    } else {
+                                        ShowMessage("บันทึกไม่สำเร็จ!", "danger");
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        });
+        //ค้นหา
+        $('#searchBtn').off().on('click', function() {
+            var rules2 = rules.slice();
+            rules2.splice(1, 1);
+            $('#fmRegflag').jqxValidator('rules', rules2);
+            //Show Dialog Search
+            searchAll('regflag', 'regcode');
+            $('#okButton').on('click', function() {
+                statusChange(true);
+                $.ajax({
+                    async: false,
+                    method: 'GET',
+                    dataType: 'json',
+                    url: "sqltext",
+                    data: {
+                        sql: "SELECT * FROM REGFLAG WHERE REGCODE = '" + $('#regcode').val() + "' "
+                    },
+                    success: function(data) {
+                        $('#regdesc').val(data[0].REGDESC);
+                    }
+                });
+            });
+        });
+        //ลบ
+        $('#deleteBtn').off().on('click', function() {
+            $.when($.confirmdlg('ต้องการลบข้อมูล?', 'warning')).then(function() {
+                $('#ok').click(function(event) {
+                    var valueJSON = [{
+                        table: 'REGFLAG',
+                        field: 'REGCODE',
+                        key: $('#regcode').val(),
+                    }];
+                    // Convert Value To JSON String
+                    var value = JSON.stringify(valueJSON);
+                    $.ajax({
+                        async: false,
+                        method: 'POST',
+                        dataType: 'json',
+                        url: "delete",
+                        data: value,
+                        success: function(data) {
+                            if (data === true) {
+                                ShowMessage("ลบข้อมูลเรียบร้อย!", "success");
+                                statusChange(false);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            ShowMessage("ลบข้อมูลไม่สำเร็จ! ", "danger");
+                        }
+                    });
+                });
+            });
+        });
+    });
+</script>

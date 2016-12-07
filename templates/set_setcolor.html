@@ -1,0 +1,602 @@
+﻿<div class="row" id="spy2">
+    <!-- Chart with filter Widget -->
+    <div class="col-md-12 admin-grid">
+        <div class="panel" id="p2">
+            <div class="panel-heading">
+                <span class="panel-icon"><span class="glyphicons glyphicons-imac"></span></span>
+                <span class="panel-title">กำหนดสีสินค้า</span>
+                <span class="panel-controls">
+                    <a href="#" class="panel-control-loader"></a>
+                    <a href="#" class="panel-control-remove"></a>
+                    <a href="#" class="panel-control-collapse"></a>
+                    <a href="#" class="panel-control-fullscreen"></a>
+                </span>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" id="fmSetcolor">
+                    <div class="p15 pt5 mt15">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <!-- Start -->
+                                <div class="admin-form">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="colorcode">รหัสสีสินค้า</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <input type="text" id="colorcode" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="colordesc">รายละเอียดสีสินค้า</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <input type="text" id="colordesc" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="colorgroup">สีตลาด</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <input type="text" id="colorgroup" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="colorflag">ระงับการใช้งาน</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <div id='block' style='margin-left: 10px; float: left;'><span>ใช้งานปกติ</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-12">
+                                            <div id="tablesetcolor"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"></label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <button type="button" id="newBtn"><span class="fa fa-refresh"></span> เริ่มใหม่</button>
+                                                <button type="button" id="saveBtn"><span class="fa fa-floppy-o"></span> บันทึก</button>
+                                                <button type="button" id="searchBtn"><span class="fa fa-search"></span> ค้นหา</button>
+                                                <button type="button" id="deleteBtn"><span class="fa fa-trash-o"></span> ลบ</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="validecolortrn">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end: .col-md-12.admin-grid -->
+</div>
+<!-- end: .row -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        var status = 'insert';
+        $('.admin-panels').adminpanel({
+            grid: '.admin-grid',
+            callback: function() {
+                bootbox.confirm('<h3>A Custom Callback!</h3>', function() {});
+            },
+            onFinish: function() {
+                $('.admin-panels').addClass('animated fadeIn').removeClass('fade-onload');
+                demoHighCharts.init();
+            },
+            onSave: function() {
+                $(window).trigger('resize');
+            }
+        });
+        $("#colorcode").jqxInput({
+            placeHolder: "Enter a color code",
+            height: 25,
+            width: 300,
+            maxLength: 20
+        });
+        $("#colordesc").jqxInput({
+            placeHolder: "Enter a color description",
+            height: 25,
+            width: 300,
+            maxLength: 20
+        });
+        $("#colorgroup").jqxInput({
+            placeHolder: "Enter a marketing color",
+            height: 25,
+            width: 300,
+            maxLength: 30
+        });
+        // states
+        $("#block").jqxCheckBox({
+            width: 120,
+            height: 25,
+            checked: false
+        });
+        $("#block").on('change', function(event) {
+            var checked = event.args.checked;
+            if (checked) {
+                $("#block").find('span')[1].innerHTML = 'ระงับ';
+            } else {
+                $("#block").find('span')[1].innerHTML = 'ใช้งานปกติ';
+            }
+        });
+        //ข้อมูลรุ่น ทั้งหมด
+        var sourceSetmodel = {
+            async: false,
+            datatype: "json",
+            datafields: [{
+                name: 'MODELCOD',
+                type: 'string'
+            }, {
+                name: 'MODELDESC',
+                type: 'string'
+            }],
+            url: "sqltext",
+            data: {
+                sql: "SELECT * FROM SETMODEL ORDER BY MODELCOD"
+            }
+        };
+        var dataAdtSetmodel = new $.jqx.dataAdapter(sourceSetmodel);
+        //ข้อมูลแบบ ทั้งหมด
+        var sourceSetbaab = {
+            async: false,
+            datatype: "json",
+            datafields: [{
+                name: 'BAABCOD',
+                type: 'string'
+            }, {
+                name: 'BAABDESC',
+                type: 'string'
+            }],
+            url: "sqltext",
+            data: {
+                sql: "SELECT * FROM SETBAAB ORDER BY BAABCOD"
+            }
+        };
+        var dataAdtSetbaab = new $.jqx.dataAdapter(sourceSetbaab);
+        //Validate Grid
+        function createGridValidate(cell, value) {
+            $("#validecolortrn").val("true");
+            if (cell.column === "MODELCOD") {
+                var rows = $("#tablesetcolor").jqxGrid('getdisplayrows');
+                if ((value !== undefined) && (value !== '')) {
+                    var x1 = 0;
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if ((i !== cell.row) && (row.MODELCOD === value)) {
+                            x1++;
+                        };
+                    }
+                    if (x1 !== 0) {
+                        return {
+                            result: false,
+                            message: "ไม่สามารถเลือกรหัสรุ่นซ้ำกันได้"
+                        };
+                    };
+                    if (x1 !== 0) {
+                        $("#validecolortrn").val("false");
+                    };
+                } else {
+                    $("#validecolortrn").val("false");
+                    return {
+                        result: false,
+                        message: "กรุณาเลือกรหัสรุ่น"
+                    };
+                }
+            } else if (cell.column === "BAABCOD") {
+                var rows = $("#tablesetcolor").jqxGrid('getdisplayrows');
+                if ((value !== undefined) && (value !== '')) {
+                    var x1 = 0;
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        if ((i !== cell.row) && (row.BAABCOD === value)) {
+                            x1++;
+                        };
+                    }
+                    if (x1 !== 0) {
+                        return {
+                            result: false,
+                            message: "ไม่สามารถเลือกรหัสแบบซ้ำกันได้"
+                        };
+                    };
+                    if (x1 !== 0) {
+                        $("#validecolortrn").val("false");
+                    };
+                } else {
+                    $("#validecolortrn").val("false");
+                    return {
+                        result: false,
+                        message: "กรุณาเลือกรหัสแบบ"
+                    };
+                }
+            }
+            return true;
+        }
+
+        var dataColortrn = [];
+        var sourceColortrn = {
+            datatype: "json",
+            datafields: [{
+                name: 'IDNO',
+                type: 'integer'
+            }, {
+                name: 'MODELCOD',
+                type: 'string'
+            }, {
+                name: 'BAABCOD',
+                type: 'string'
+
+            }],
+            addrow: function(rowid, rowdata, position, commit) {
+                commit(true);
+            },
+            deleterow: function(rowid, commit) {
+                commit(true);
+            },
+            updaterow: function(rowid, newdata, commit) {
+                commit(true);
+            },
+            id: 'id',
+            localdata: dataColortrn
+        };
+
+        var dataAdtColortrn = new $.jqx.dataAdapter(sourceColortrn);
+        $("#tablesetcolor").jqxGrid({
+            width: '100%',
+            height: 250,
+            source: dataAdtColortrn,
+            editable: true,
+            altrows: true,
+            filterable: true,
+            columnsresize: true,
+            selectionmode: 'singlerow',
+            editmode: 'selectedcell',
+            showstatusbar: true,
+            statusbarheight: 35,
+            showaggregates: true,
+            columns: [{
+                text: '#',
+                sortable: false,
+                filterable: false,
+                editable: false,
+                groupable: false,
+                draggable: false,
+                resizable: false,
+                align: 'center',
+                cellsalign: 'center',
+                datafield: '',
+                columntype: 'number',
+                width: 15,
+                cellsrenderer: function(row, column, value) {
+                    return "<div style='margin:4px; text-align:center;'>" + (value + 1) + "</div>";
+                },
+                aggregates: ['count'],
+                aggregatesrenderer: function(aggregates, column, element) {
+                    var renderstring = "";
+                    $.each(aggregates, function(key, value) {
+                        renderstring += '<div style="position: relative; margin: 4px; overflow: hidden; font-weight: bold;">' + value + '</div>';
+                    });
+                    return renderstring;
+                }
+            }, {
+                text: 'IDNO',
+                datafield: 'IDNO',
+                width: 80,
+                hidden: false
+            }, {
+                text: 'รหัสรุ่น',
+                datafield: 'MODELCOD',
+                width: 200,
+                align: 'center',
+                cellsalign: 'left',
+                validation: createGridValidate,
+                columntype: 'combobox',
+                createeditor: function(row, column, editor) {
+                    editor.jqxComboBox({
+                        source: dataAdtSetmodel,
+                        displayMember: 'MODELCOD',
+                        valueMember: 'MODELCOD',
+                        dropDownHeight: 203,
+                        selectionMode: "dropDownList",
+                        searchMode: 'containsignorecase',
+                        selectedIndex: 0,
+                        dropDownWidth: 270
+                    });
+                    editor.on('change', function(event) {
+                        if (event.args !== undefined) {
+                            if (event.args.type == "keyboard" || event.args.type == "mouse") {
+                                $("#tablesetcolor").jqxGrid('endcelledit', row, "MODELCOD", false);
+                            }
+                        }
+                    });
+                }
+            }, {
+                text: 'รหัสแบบ',
+                datafield: 'BAABCOD',
+                width: 200,
+                align: 'center',
+                cellsalign: 'left',
+                validation: createGridValidate,
+                columntype: 'combobox',
+                createeditor: function(row, column, editor) {
+                    editor.jqxComboBox({
+                        source: dataAdtSetbaab,
+                        displayMember: 'BAABCOD',
+                        valueMember: 'BAABCOD',
+                        dropDownHeight: 203,
+                        selectionMode: "dropDownList",
+                        searchMode: 'containsignorecase',
+                        selectedIndex: 0,
+                        dropDownWidth: 270
+                    });
+                    editor.on('change', function(event) {
+                        if (event.args !== undefined) {
+                            if (event.args.type == "keyboard" || event.args.type == "mouse") {
+                                $("#tablesetcolor").jqxGrid('endcelledit', row, "BAABCOD", false);
+                            }
+                        }
+                    });
+                }
+            }],
+            showtoolbar: true,
+            rendertoolbar: function(toolbar) {
+                var container = $("<div style='margin: 5px;'></div>");
+                toolbar.append(container);
+                container.append('<button type="button" id="addrow1"><span class="fa fa-plus"></span> เพิ่มรายการ</button> <button type="button" id="deleterow"><span class="fa fa-minus"></span> ลบรายการ</button>');
+
+                // create new row.
+                $("#addrow1").off().on('click', function() {
+                    if ($("#colorcode").val() !== '') {
+                        var rows = $("#tablesetcolor").jqxGrid('getdisplayrows');
+                        var x1 = 0;
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            if ((row.MODELCOD === undefined) || (row.BAABCOD === undefined) || (row.MODELCOD === '') || (row.BAABCOD === '')) {
+                                x1++;
+                            };
+                        }
+                        if (x1 === 0) {
+                            var datarow = {
+                                IDNO: 0,
+                                MODELCOD: '',
+                                BAABCOD: ''
+                            };
+                            var commit = $("#tablesetcolor").jqxGrid('addrow', null, datarow);
+                        }
+                    };
+                });
+
+                //Delete row
+                $("#deleterow").click(function() {
+                    var selectedrowindex = $("#tablesetcolor").jqxGrid('getselectedrowindex');
+                    var rowscount = $("#tablesetcolor").jqxGrid('getdatainformation').rowscount;
+                    if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+                        var id = $("#tablesetcolor").jqxGrid('getrowid', selectedrowindex);
+                        var commit = $("#tablesetcolor").jqxGrid('deleterow', id);
+                    }
+                    return false;
+                });
+
+                $("#addrow1").jqxButton({
+                    width: 100,
+                    height: 25,
+                    template: "success"
+                });
+                $("#deleterow").jqxButton({
+                    width: 100,
+                    height: 25,
+                    template: "danger",
+                });
+            }
+        });
+
+        $("#newBtn").jqxButton({
+            template: "info",
+            width: 90
+        });
+        $("#saveBtn").jqxButton({
+            template: "primary",
+            width: 90
+        });
+        $("#searchBtn").jqxButton({
+            template: "success",
+            width: 90
+        });
+        $("#deleteBtn").jqxButton({
+            disabled: true,
+            template: "danger",
+            width: 90
+        });
+
+        function statusChange(disabled) {
+            if (disabled === false) {
+                status = 'insert';
+                $('#colorcode').val('');
+                $('#colordesc').val('');
+                $('#colorgroup').val('');
+                $('#block').val(false);
+            } else {
+                status = 'update';
+            }
+            $('#colorcode').jqxInput({
+                disabled: disabled
+            });
+            $("#deleteBtn").jqxButton({
+                disabled: !disabled
+            });
+        }
+
+        var rules = [{
+            input: '#colorcode',
+            message: 'กรุณาระบุรหัสสี!',
+            action: 'keyup, blur',
+            rule: 'required'
+        }, {
+            input: '#colorcode',
+            message: 'ระบุรหัสสีซ้ำ!',
+            action: 'keyup, blur',
+            rule: function(input, commit) {
+                var colorcode = $('#colorcode').val();
+                if (colorcode !== '') {
+                    $.ajax({
+                        url: "duplicateCheck",
+                        type: 'get',
+                        data: {
+                            table: 'SETCOLOR',
+                            field: 'COLORCOD',
+                            value: colorcode
+                        },
+                        success: function(data) {
+                            if (data === true) {
+                                commit(true);
+                            } else commit(false);
+                        },
+                        error: function() {
+                            commit(false);
+                        }
+                    });
+                }
+            }
+        }];
+
+        $('#fmSetcolor').jqxValidator({
+            hintType: 'label',
+            animationDuration: 0,
+            closeOnClick: false,
+            rules: rules
+        });
+        //เริ่มใหม่
+        $('#newBtn').off().on('click', function() {
+            loadHTML("set_setcolor");
+        });
+        //บันทึก
+        $('#saveBtn').off().on('click', function() {
+            $('#fmSetcolor').jqxValidator('validate', function(result) {
+                if ((result) && ($("#validecolortrn").val() === "true")) {
+                    $.when($.confirmdlg('ต้องการบันทึกข้อมูล?', 'info')).then(function() {
+                        var valueBlock = '';
+                        if ($("#block").val() === true) {
+                            valueBlock = 'Y';
+                        } else {
+                            valueBlock = 'N';
+                        }
+                        $("#tablesetcolor").jqxGrid('refreshdata');
+                        var rowscount = $("#tablesetcolor").jqxGrid('getdatainformation').rowscount;
+                        var colortrn = [];
+                        for (var i = 0; i < rowscount; i++) {
+                            var data = $("#tablesetcolor").jqxGrid('getrowdata', i);
+                            colortrn.push({
+                                IDNO: data.IDNO,
+                                COLORCOD: $("#colorcode").val(),
+                                MODELCOD: data.MODELCOD,
+                                BAABCOD: data.BAABCOD
+                            });
+                        };
+                        var valueJSON = [{
+                            status: status,
+                            table: 'SETCOLOR',
+                            field: 'COLORCOD',
+                            key: $('#colorcode').val(),
+                            value: [{
+                                COLORCOD: $('#colorcode').val(),
+                                COLORDESC: $('#colordesc').val(),
+                                COLORGRP: $('#colorgroup').val(),
+                                BLOCK: valueBlock
+                            }]
+                        }, {
+                            table: 'COLORTRAN',
+                            value: colortrn
+                        }];
+                        // Convert Value To JSON String
+                        var value = JSON.stringify(valueJSON);
+                        console.log(value);
+                        $('#ok').click(function(event) {
+                            $.ajax({
+                                url: 'saveAll',
+                                type: 'POST',
+                                contentType: "application/json",
+                                dataType: "json",
+                                data: value,
+                                success: function(data) {
+                                    if (data === true) {
+                                        ShowMessage("บันทึกข้อมูลเรียบร้อย!", "success");
+                                        statusChange(false);
+                                    } else {
+                                        ShowMessage("บันทึกไม่สำเร็จ!", "danger");
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        });
+        //ค้นหา
+        $('#searchBtn').off().on('click', function() {
+            var rules2 = rules.slice();
+            rules2.splice(1, 1);
+            $('#fmSetcolor').jqxValidator('rules', rules2);
+            //Show Dialog Search
+            searchAll('setcolor', 'colorcode');
+            $('#okButton').on('click', function() {
+                statusChange(true);
+                $.ajax({
+                    async: false,
+                    method: 'GET',
+                    dataType: 'json',
+                    url: "sqltext",
+                    data: {
+                        sql: "SELECT * FROM SETCOLOR WHERE COLORCOD = '" + $('#colorcode').val() + "' "
+                    },
+                    success: function(data) {
+                        $('#colordesc').val(data[0].COLORDESC);
+                        $('#colorgroup').val(data[0].COLORGRP);
+                        if (data[0].BLOCK === 'N') {
+                            $('#block').val(false);
+                        } else {
+                            $('#block').val(true);
+                        }
+                    }
+                });
+            });
+        });
+        //ลบ
+        $('#deleteBtn').off().on('click', function() {
+            $.when($.confirmdlg('ต้องการลบข้อมูล?', 'warning')).then(function() {
+                $('#ok').click(function(event) {
+                    var valueJSON = [{
+                        table: 'SETCOLOR',
+                        field: 'COLORCOD',
+                        key: $('#colorcode').val(),
+                    }];
+                    // Convert Value To JSON String
+                    var value = JSON.stringify(valueJSON);
+                    $.ajax({
+                        async: false,
+                        method: 'POST',
+                        dataType: 'json',
+                        url: "delete",
+                        data: value,
+                        success: function(data) {
+                            if (data === true) {
+                                ShowMessage("ลบข้อมูลเรียบร้อย!", "success");
+                                statusChange(false);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            ShowMessage("ลบข้อมูลไม่สำเร็จ! ", "danger");
+                        }
+                    });
+                });
+            });
+        });
+    });
+</script>
