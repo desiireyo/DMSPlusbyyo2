@@ -1,0 +1,378 @@
+﻿<div class="row" id="spy2">
+    <!-- Chart with filter Widget -->
+    <div class="col-md-12 admin-grid">
+        <div class="panel" id="p2">
+            <div class="panel-heading">
+                <span class="panel-icon"><span class="glyphicons glyphicons-imac"></span></span>
+                <span class="panel-title">กำหนดรหัสการรับชำระ</span>
+                <span class="panel-controls">
+                    <a href="#" class="panel-control-loader"></a>
+                    <a href="#" class="panel-control-remove"></a>
+                    <a href="#" class="panel-control-collapse"></a>
+                    <a href="#" class="panel-control-fullscreen"></a>
+                </span>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" id="fmPayfor">
+                    <div class="p15 pt5 mt15">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <!-- Start -->
+                                <div class="admin-form">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="forcode">รหัสการรับชำระ</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <input type="text" id="forcode" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="fordesc">รายละเอียดการรับขำระ</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <input type="text" id="fordesc" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="tsale">ปรเภทการขาย</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <div id="tsale" class="input-button">
+                                                    <input type="text" id="v-tsale" />
+                                                    <div id="searchTsale"><img alt="search" width="20" height="20" src="/images/search_lg.png" /></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="accmstcode">รหัสบัญชี</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <div id="accmstcode" class="input-button">
+                                                    <input type="text" id="v-accmstcode" />
+                                                    <div id="searchAccmstcode"><img alt="search" width="20" height="20" src="/images/search_lg.png" /></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="block">ระงับการใช้งาน</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <div id='block' style='margin-left: 10px; float: left;'><span>ใช้งานปกติ</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label" for="taxfl">ออกใบกำกับภาษี</label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <div id='taxfl' style='margin-left: 10px; float: left;'><span>ไม่ออกใบกำกับ</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label"></label>
+                                        <div class="col-md-9">
+                                            <div class="bs-component">
+                                                <button type="button" id="newBtn"><span class="fa fa-refresh"></span> เริ่มใหม่</button>
+                                                <button type="button" id="saveBtn"><span class="fa fa-floppy-o"></span> บันทึก</button>
+                                                <button type="button" id="searchBtn"><span class="fa fa-search"></span> ค้นหา</button>
+                                                <button type="button" id="deleteBtn"><span class="fa fa-trash-o"></span> ลบ</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- end: .col-md-12.admin-grid -->
+</div>
+<!-- end: .row -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        var status = 'insert';
+        $('.admin-panels').adminpanel({
+            grid: '.admin-grid',
+            callback: function() {
+                bootbox.confirm('<h3>A Custom Callback!</h3>', function() {});
+            },
+            onFinish: function() {
+                $('.admin-panels').addClass('animated fadeIn').removeClass('fade-onload');
+                demoHighCharts.init();
+            },
+            onSave: function() {
+                $(window).trigger('resize');
+            }
+        });
+
+        $("#forcode").jqxInput({
+            placeHolder: "Enter a forcode",
+            height: 25,
+            width: 300,
+            maxLength: 5
+        });
+        $("#fordesc").jqxInput({
+            placeHolder: "Enter a description",
+            height: 25,
+            width: 300,
+            maxLength: 60
+        });
+        $("#tsale").jqxInput({
+            placeHolder: "Enter a tsale",
+            height: 25,
+            width: 300,
+            maxLength: 1
+        });
+        $("#accmstcode").jqxInput({
+            placeHolder: "Enter a acc code",
+            height: 25,
+            width: 300,
+            maxLength: 12
+        });
+        $("#block").jqxCheckBox({
+            width: 120,
+            height: 25,
+            checked: false
+        });
+        $("#block").on('change', function(event) {
+            var checked = event.args.checked;
+            if (checked) {
+                $("#block").find('span')[1].innerHTML = 'ยกเลิกการใช้งาน';
+            } else {
+                $("#block").find('span')[1].innerHTML = 'ใช้งานปกติ';
+            }
+        });
+        $("#taxfl").jqxCheckBox({
+            width: 120,
+            height: 25,
+            checked: false
+        });
+        $("#taxfl").on('change', function(event) {
+            var checked = event.args.checked;
+            if (checked) {
+                $("#taxfl").find('span')[1].innerHTML = 'ออกใบกำกับภาษี';
+            } else {
+                $("#taxfl").find('span')[1].innerHTML = 'ไม่ออกใบกำกับ';
+            }
+        });
+
+        $("#newBtn").jqxButton({
+            template: "info",
+            width: 90
+        });
+        $("#saveBtn").jqxButton({
+            template: "primary",
+            width: 90
+        });
+        $("#searchBtn").jqxButton({
+            template: "success",
+            width: 90
+        });
+        $("#deleteBtn").jqxButton({
+            disabled: true,
+            template: "danger",
+            width: 90
+        });
+
+        function statusChange(disabled) {
+            if (disabled === false) {
+                status = 'insert';
+                $('#forcode').val('');
+                $('#fordesc').val('');
+                $('#tsale').val('');
+                $('#accmstcode').val('');
+            } else {
+                status = 'update';
+            }
+            $('#forcode').jqxInput({
+                disabled: disabled
+            });
+            $("#deleteBtn").jqxButton({
+                disabled: !disabled
+            });
+        }
+
+        var rules = [{
+            input: '#forcode',
+            message: 'กรุณาระบุรหัสประเภทการชำระ!',
+            action: 'keyup, blur',
+            rule: 'required'
+        }, {
+            input: '#forcode',
+            message: 'ระบุรหัสประเภทการชำระซ้ำ!',
+            action: 'keyup, blur',
+            rule: function(input, commit) {
+                var forcode = $('#forcode').val();
+                if (forcode !== '') {
+                    $.ajax({
+                        url: "duplicateCheck",
+                        type: 'get',
+                        data: {
+                            table: 'PAYFOR',
+                            field: 'FORCODE',
+                            value: forcode
+                        },
+                        success: function(data) {
+                            if (data === true) {
+                                commit(true);
+                            } else commit(false);
+                        },
+                        error: function() {
+                            commit(false);
+                        }
+                    });
+                }
+            }
+        }];
+
+        $('#fmPayfor').jqxValidator({
+            hintType: 'label',
+            animationDuration: 0,
+            closeOnClick: false,
+            rules: rules
+        });
+        //เริ่มใหม่
+        $('#newBtn').off().on('click', function() {
+            loadHTML("set_payfor");
+        });
+        //บันทึก
+        $('#saveBtn').off().on('click', function() {
+            $('#fmPayfor').jqxValidator('validate', function(result) {
+                if (result) {
+                    $.when($.confirmdlg('ต้องการบันทึกข้อมูล?', 'info')).then(function() {
+                        var valueBlock = '';
+                        var valueTaxfl = '';
+                        if ($("#block").val() === true) {
+                            valueBlock = 'Y';
+                        } else {
+                            valueBlock = 'N';
+                        }
+                        if ($("#taxfl").val() === true) {
+                            valueTaxfl = 'Y';
+                        } else {
+                            valueTaxfl = 'N';
+                        }
+                        var valueJSON = [{
+                            status: status,
+                            table: 'PAYFOR',
+                            field: 'FORCODE',
+                            key: $('#forcode').val(),
+                            value: [{
+                                FORCODE: $('#forcode').val(),
+                                FORDESC: $('#fordesc').val(),
+                                ACC_CODE: $('#accmstcode').val(),
+                                TSALE: $('#tsale').val(),
+                                BLOCK: valueBlock,
+                                TAXFL: valueTaxfl
+                            }]
+                        }];
+                        //valueJSON.push();
+                        // Convert Value To JSON String
+                        var value = JSON.stringify(valueJSON);
+                        $('#ok').click(function(event) {
+                            $.ajax({
+                                url: 'saveOne',
+                                type: 'POST',
+                                contentType: "application/json",
+                                dataType: "json",
+                                data: value,
+                                success: function(data) {
+                                    if (data === true) {
+                                        ShowMessage("บันทึกข้อมูลเรียบร้อย!", "success");
+                                        statusChange(false);
+                                    } else {
+                                        ShowMessage("บันทึกไม่สำเร็จ!", "danger");
+                                    }
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        });
+        //ค้นหา
+        $('#searchBtn').off().on('click', function() {
+            var rules2 = rules.slice();
+            rules2.splice(1, 1);
+            $('#fmPayfor').jqxValidator('rules', rules2);
+            //Show Dialog Search
+            searchAll('payfor', 'forcode');
+            $('#okButton').on('click', function() {
+                statusChange(true);
+                $.ajax({
+                    async: false,
+                    method: 'GET',
+                    dataType: 'json',
+                    url: "sqltext",
+                    data: {
+                        sql: "SELECT * FROM PAYFOR WHERE FORCODE = '" + $('#forcode').val() + "' "
+                    },
+                    success: function(data) {
+                        $('#fordesc').val(data[0].FORDESC);
+                        $('#tsale').val(data[0].TSALE);
+                        $('#accmstcode').val(data[0].ACC_CODE);
+                        if (data[0].BLOCK === 'N') {
+                            $('#block').val(false);
+                        } else {
+                            $('#block').val(true);
+                        }
+                        if (data[0].TAXFL === 'N') {
+                            $('#taxfl').val(false);
+                        } else {
+                            $('#taxfl').val(true);
+                        }
+                    }
+                });
+            });
+        });
+        //ค้นหา รหัสบัญชี
+        $('#searchAccmstcode').off().on('click', function() {
+            //Show Dialog Search
+            searchAll('accmst', 'accmstcode');
+        });
+        //ค้นหา ประเภทการขาย
+        $('#searchTsale').off().on('click', function() {
+            //Show Dialog Search
+            searchAll('tsale', 'tsale');
+        });
+        //ลบ
+        $('#deleteBtn').off().on('click', function() {
+            $.when($.confirmdlg('ต้องการลบข้อมูล?', 'warning')).then(function() {
+                $('#ok').click(function(event) {
+                    var valueJSON = [{
+                        table: 'PAYFOR',
+                        field: 'FORCODE',
+                        key: $('#forcode').val(),
+                    }];
+                    // Convert Value To JSON String
+                    var value = JSON.stringify(valueJSON);
+                    $.ajax({
+                        async: false,
+                        method: 'POST',
+                        dataType: 'json',
+                        url: "delete",
+                        data: value,
+                        success: function(data) {
+                            if (data === true) {
+                                ShowMessage("ลบข้อมูลเรียบร้อย!", "success");
+                                statusChange(false);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            ShowMessage("ลบข้อมูลไม่สำเร็จ! ", "danger");
+                        }
+                    });
+                });
+            });
+        });
+    });
+</script>
